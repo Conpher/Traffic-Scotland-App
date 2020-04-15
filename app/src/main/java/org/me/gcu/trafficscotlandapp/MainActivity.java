@@ -30,13 +30,14 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private RecyclerView mRecyclerView;
-    private Button mFetchFeedButton;
-    private Button roadworksButton;
-    private SwipeRefreshLayout mSwipeLayout;
+    private RecyclerView itemRecycler;
+    private Button btnCurrentIncidents;
+    private Button btnRoadworks;
+    private Button btnPlannedRoadworks;
+    private SwipeRefreshLayout refreshLayout;
 
 
-    private List<RssFeedModel> mFeedModelList;
+    private List<RssFeedModel> itemList;
     private String mFeedTitle;
     private String mFeedLink;
     private String mFeedDescription;
@@ -48,15 +49,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        mFetchFeedButton = (Button) findViewById(R.id.fetchFeedButton);
-        roadworksButton = (Button) findViewById(R.id.roadworksFeedButton);
-        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        itemRecycler = (RecyclerView) findViewById(R.id.recyclerView);
+        btnCurrentIncidents = (Button) findViewById(R.id.getCurrentIncidentsBtn);
+        btnRoadworks = (Button) findViewById(R.id.getRoadworksBtn);
+        btnPlannedRoadworks = (Button) findViewById(R.id.getPlannedRoadworksBtn);
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        itemRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        roadworksButton.setOnClickListener(new View.OnClickListener(){
+
+        btnCurrentIncidents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                urlParcel = "https://trafficscotland.org/rss/feeds/currentincidents.aspx";
+                new FetchFeedTask().execute((Void) null);
+            }
+        });
+
+        btnRoadworks.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 urlParcel = "https://trafficscotland.org/rss/feeds/roadworks.aspx";
@@ -64,14 +75,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mFetchFeedButton.setOnClickListener(new View.OnClickListener() {
+        btnPlannedRoadworks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                urlParcel = "https://trafficscotland.org/rss/feeds/currentincidents.aspx";
+                urlParcel = "https://trafficscotland.org/rss/feeds/plannedroadworks.aspx";
                 new FetchFeedTask().execute((Void) null);
             }
         });
-        mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 new FetchFeedTask().execute((Void) null);
@@ -122,10 +134,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (name.equalsIgnoreCase("title")) {
                     title = result;
-                } else if (name.equalsIgnoreCase("link")) {
-                    link = result;
                 } else if (name.equalsIgnoreCase("description")) {
                     description = result;
+                } else if (name.equalsIgnoreCase("link")) {
+                    link = result;
                 }
 
                 if (title != null && link != null && description != null) {
@@ -158,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            mSwipeLayout.setRefreshing(true);
+            refreshLayout.setRefreshing(true);
             mFeedTitle = null;
             mFeedLink = null;
             mFeedDescription = null;
@@ -171,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 URL url = new URL(urlLink);
                 InputStream inputStream = url.openConnection().getInputStream();
-                mFeedModelList = parseFeed(inputStream);
+                itemList = parseFeed(inputStream);
                 return true;
             } catch (IOException e) {
                 Log.e(TAG, "Error", e);
@@ -183,14 +195,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean success) {
-            mSwipeLayout.setRefreshing(false);
+
+            refreshLayout.setRefreshing(false);
 
             if (success) {
                 // Fill RecyclerView
-                mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
+                itemRecycler.setAdapter(new RssFeedListAdapter(itemList));
             } else {
                 Toast.makeText(MainActivity.this,
-                        "Enter a valid Rss feed url",
+                        "Error! Please Try Again!",
                         Toast.LENGTH_LONG).show();
             }
         }

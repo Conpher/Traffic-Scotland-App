@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Traffic Scotland</string>
+    <string name="current_incidents_btn">Current Incidents</string>
+    <string name="roadworks_btn">Roadworks</string>
+    <string name="planned_roadworks">Planned Roadworks</string>
 </resources>
