@@ -38,10 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private List<RssFeedModel> itemList;
-    private String mFeedTitle;
-    private String mFeedLink;
-    private String mFeedDescription;
-
     private String urlParcel;
 
     @Override
@@ -146,9 +142,8 @@ public class MainActivity extends AppCompatActivity {
                         items.add(item);
                     }
                     else {
-                        mFeedTitle = title;
-                        mFeedLink = link;
-                        mFeedDescription = description;
+
+                        Log.e(TAG,"Error! No information available, please try again later.");
                     }
 
                     title = null;
@@ -157,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
                     isItem = false;
                 }
             }
-
             return items;
         } finally {
             inputStream.close();
@@ -171,9 +165,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             refreshLayout.setRefreshing(true);
-            mFeedTitle = null;
-            mFeedLink = null;
-            mFeedDescription = null;
             urlLink = urlParcel;
         }
 
@@ -203,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 itemRecycler.setAdapter(new RssFeedListAdapter(itemList));
             } else {
                 Toast.makeText(MainActivity.this,
-                        "Error! Please Try Again!",
+                        "Error, no items found...",
                         Toast.LENGTH_LONG).show();
             }
         }
