@@ -1,116 +1,211 @@
 package org.me.gcu.trafficscotlandapp;
 
+/**
+ * Christopher Conlan
+ * Created On: 14/04/2020
+ * Student No: S1512271
+ * Mobile Platform Development Coursework
+ */
+
+import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Xml;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import java.io.BufferedReader;
+import android.widget.Toast;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener
-{
-    private TextView rawDataDisplay;
-    private String result;
-    private Button startButton;
-    // Traffic Scotland URLs
-    //private String urlSource = "https://trafficscotland.org/rss/feeds/roadworks.aspx";
-    //private String urlSource = "https://trafficscotland.org/rss/feeds/plannedroadworks.aspx";
-    private String urlSource = "https://trafficscotland.org/rss/feeds/currentincidents.aspx";
+public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
+
+    private RecyclerView itemRecycler;
+    private Button btnCurrentIncidents;
+    private Button btnRoadworks;
+    private Button btnPlannedRoadworks;
+    private SwipeRefreshLayout refreshLayout;
+
+
+    private List<RssFeedModel> itemList;
+    private String mFeedTitle;
+    private String mFeedLink;
+    private String mFeedDescription;
+
+    private String urlParcel;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        rawDataDisplay = (TextView)findViewById(R.id.rawDataDisplay);
-        startButton = (Button)findViewById(R.id.startButton);
-        startButton.setOnClickListener(this);
+        itemRecycler = (RecyclerView) findViewById(R.id.recyclerView);
+        btnCurrentIncidents = (Button) findViewById(R.id.getCurrentIncidentsBtn);
+        btnRoadworks = (Button) findViewById(R.id.getRoadworksBtn);
+        btnPlannedRoadworks = (Button) findViewById(R.id.getPlannedRoadworksBtn);
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
+
+        itemRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+
+        btnCurrentIncidents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                urlParcel = "https://trafficscotland.org/rss/feeds/currentincidents.aspx";
+                new FetchFeedTask().execute((Void) null);
+            }
+        });
+
+        btnRoadworks.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                urlParcel = "https://trafficscotland.org/rss/feeds/roadworks.aspx";
+                new FetchFeedTask().execute((Void) null);
+            }
+        });
+
+        btnPlannedRoadworks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                urlParcel = "https://trafficscotland.org/rss/feeds/plannedroadworks.aspx";
+                new FetchFeedTask().execute((Void) null);
+            }
+        });
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new FetchFeedTask().execute((Void) null);
+            }
+        });
     }
 
-    public void onClick(View aview)
-    {
-        startProgress();
-    }
+    public List<RssFeedModel> parseFeed(InputStream inputStream) throws XmlPullParserException, IOException {
+        String title = null;
+        String link = null;
+        String description = null;
+        boolean isItem = false;
+        List<RssFeedModel> items = new ArrayList<>();
 
-    public void startProgress()
-    {
-        // Run network access on a separate thread;
-        new Thread(new Task(urlSource)).start();
-    } //
+        try {
+            XmlPullParser xmlPullParser = Xml.newPullParser();
+            xmlPullParser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            xmlPullParser.setInput(inputStream, null);
 
-    // Need separate thread to access the internet resource over network
-    // Other neater solutions should be adopted in later iterations.
-    private class Task implements Runnable
-    {
-        private String url;
+            xmlPullParser.nextTag();
+            while (xmlPullParser.next() != XmlPullParser.END_DOCUMENT) {
+                int eventType = xmlPullParser.getEventType();
 
-        public Task(String aurl)
-        {
-            url = aurl;
+                String name = xmlPullParser.getName();
+                if(name == null)
+                    continue;
+
+                if(eventType == XmlPullParser.END_TAG) {
+                    if(name.equalsIgnoreCase("item")) {
+                        isItem = false;
+                    }
+                    continue;
+                }
+
+                if (eventType == XmlPullParser.START_TAG) {
+                    if(name.equalsIgnoreCase("item")) {
+                        isItem = true;
+                        continue;
+                    }
+                }
+
+                Log.d("MainActivity", "Parsing name ==> " + name);
+                String result = "";
+                if (xmlPullParser.next() == XmlPullParser.TEXT) {
+                    result = xmlPullParser.getText();
+                    xmlPullParser.nextTag();
+                }
+
+                if (name.equalsIgnoreCase("title")) {
+                    title = result;
+                } else if (name.equalsIgnoreCase("description")) {
+                    description = result;
+                } else if (name.equalsIgnoreCase("link")) {
+                    link = result;
+                }
+
+                if (title != null && link != null && description != null) {
+                    if(isItem) {
+                        RssFeedModel item = new RssFeedModel(title, link, description);
+                        items.add(item);
+                    }
+                    else {
+                        mFeedTitle = title;
+                        mFeedLink = link;
+                        mFeedDescription = description;
+                    }
+
+                    title = null;
+                    link = null;
+                    description = null;
+                    isItem = false;
+                }
+            }
+
+            return items;
+        } finally {
+            inputStream.close();
         }
+    }
+
+    private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
+
+        private String urlLink;
+
         @Override
-        public void run()
-        {
-
-            URL aurl;
-            URLConnection yc;
-            BufferedReader in = null;
-            String inputLine = "";
-
-
-            Log.e("MyTag","in run");
-
-            try
-            {
-                Log.e("MyTag","in try");
-                aurl = new URL(url);
-                yc = aurl.openConnection();
-                in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-                //
-                // Throw away the first 2 header lines before parsing
-                //
-                //
-                //
-                while ((inputLine = in.readLine()) != null)
-                {
-                    result = result + inputLine;
-                    Log.e("MyTag",inputLine);
-
-                }
-                in.close();
-            }
-            catch (IOException ae)
-            {
-                Log.e("MyTag", "ioexception");
-            }
-
-            //
-            // Now that you have the xml data you can parse it
-            //
-
-            // Now update the TextView to display raw XML data
-            // Probably not the best way to update TextView
-            // but we are just getting started !
-
-            MainActivity.this.runOnUiThread(new Runnable()
-            {
-                public void run() {
-                    Log.d("UI thread", "I am the UI thread");
-                    rawDataDisplay.setText(result);
-                }
-            });
+        protected void onPreExecute() {
+            refreshLayout.setRefreshing(true);
+            mFeedTitle = null;
+            mFeedLink = null;
+            mFeedDescription = null;
+            urlLink = urlParcel;
         }
 
-    }
+        @Override
+        protected Boolean doInBackground(Void... voids) {
 
-} // End of MainActivity
+            try {
+                URL url = new URL(urlLink);
+                InputStream inputStream = url.openConnection().getInputStream();
+                itemList = parseFeed(inputStream);
+                return true;
+            } catch (IOException e) {
+                Log.e(TAG, "Error", e);
+            } catch (XmlPullParserException e) {
+                Log.e(TAG, "Error", e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+
+            refreshLayout.setRefreshing(false);
+
+            if (success) {
+                // Fill RecyclerView
+                itemRecycler.setAdapter(new RssFeedListAdapter(itemList));
+            } else {
+                Toast.makeText(MainActivity.this,
+                        "Error! Please Try Again!",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+}
