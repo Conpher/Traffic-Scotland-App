@@ -99,7 +99,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                ItemRecyclerAdapter.getFilter().filter(newText);
+                ItemRecyclerAdapter itemRecyclerAdapter = new ItemRecyclerAdapter(itemList);
+                itemRecyclerAdapter.getFilter().filter(newText);
+                itemRecycler.setAdapter(itemRecyclerAdapter);
                 return true;
             }
         });
