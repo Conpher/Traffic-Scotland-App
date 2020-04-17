@@ -54,11 +54,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/recycler_view_description"
-        android:layout_below="@id/getPlannedRoadworksBtn"
+        android:layout_below="@id/searchView"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:textSize="15dp"
         android:textStyle="italic"
         android:lineSpacingExtra="10dp"/>
+
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/getPlannedRoadworksBtn"
+        android:queryHint="Search Here..."
+        android:iconifiedByDefault="false"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"

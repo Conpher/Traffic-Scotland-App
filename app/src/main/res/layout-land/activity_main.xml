@@ -47,6 +47,14 @@
         android:layout_below="@+id/getRoadworksBtn"
         android:text="@string/planned_roadworks"/>
 
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/getPlannedRoadworksBtn"
+        android:queryHint="Search Here..."
+        android:iconifiedByDefault="false"/>
+
     <TextView
         android:id="@+id/aboutAppTxtView"
         android:layout_width="match_parent"

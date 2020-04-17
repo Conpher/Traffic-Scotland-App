@@ -7,6 +7,7 @@ package org.me.gcu.trafficscotlandapp;
  * Mobile Platform Development Coursework
  */
 
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,9 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private Button btnPlannedRoadworks;
     private TextView txtAboutApp;
     private SwipeRefreshLayout refreshLayout;
+    private SearchView searchView;
 
 
-    private List<RssFeedModel> itemList;
+    private List<ItemModel> itemList;
     private String urlParcel;
 
     @Override
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         btnCurrentIncidents = (Button) findViewById(R.id.getCurrentIncidentsBtn);
         btnRoadworks = (Button) findViewById(R.id.getRoadworksBtn);
         btnPlannedRoadworks = (Button) findViewById(R.id.getPlannedRoadworksBtn);
+        searchView = (SearchView) findViewById(R.id.searchView);
         txtAboutApp = (TextView) findViewById(R.id.aboutAppTxtView);
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
@@ -87,6 +91,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ItemRecyclerAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -95,12 +113,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public List<RssFeedModel> parseFeed(InputStream inputStream) throws XmlPullParserException, IOException {
+    public List<ItemModel> parseFeed(InputStream inputStream) throws XmlPullParserException, IOException {
         String title = null;
         String link = null;
         String description = null;
         boolean isItem = false;
-        List<RssFeedModel> items = new ArrayList<>();
+        List<ItemModel> items = new ArrayList<>();
 
         try {
             XmlPullParser xmlPullParser = Xml.newPullParser();
@@ -146,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (title != null && link != null && description != null) {
                     if(isItem) {
-                        RssFeedModel item = new RssFeedModel(title, link, description);
+                        ItemModel item = new ItemModel(title, link, description);
                         items.add(item);
                     }
                     else {
@@ -171,8 +189,11 @@ public class MainActivity extends AppCompatActivity {
 
         private String urlLink;
 
+
+
         @Override
         protected void onPreExecute() {
+
             refreshLayout.setRefreshing(true);
             urlLink = urlParcel;
         }
@@ -186,9 +207,9 @@ public class MainActivity extends AppCompatActivity {
                 itemList = parseFeed(inputStream);
                 return true;
             } catch (IOException e) {
-                Log.e(TAG, "Error", e);
+                Log.e(TAG, "Error.", e);
             } catch (XmlPullParserException e) {
-                Log.e(TAG, "Error", e);
+                Log.e(TAG, "Error, XmlPullParser issue.", e);
             }
             return false;
         }
@@ -200,12 +221,13 @@ public class MainActivity extends AppCompatActivity {
 
             if (success) {
                 // Fill RecyclerView
-                itemRecycler.setAdapter(new RssFeedListAdapter(itemList));
+                itemRecycler.setAdapter(new ItemRecyclerAdapter(itemList));
             } else {
                 Toast.makeText(MainActivity.this,
                         "Error, no items found...",
                         Toast.LENGTH_LONG).show();
             }
+
         }
     }
 }
