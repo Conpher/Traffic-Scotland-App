@@ -22,6 +22,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.me.gcu.trafficscotlandapp.Enum.SourceUrl;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 txtAboutApp.setVisibility(View.GONE);
-                urlParcel = "https://trafficscotland.org/rss/feeds/currentincidents.aspx";
+                urlParcel = SourceUrl.CURRENT_INCIDENTS.toString();
                 new FetchFeedTask().execute((Void) null);
             }
         });
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 txtAboutApp.setVisibility(View.GONE);
-                urlParcel = "https://trafficscotland.org/rss/feeds/roadworks.aspx";
+                urlParcel = SourceUrl.ROADWORKS.toString();
                 new FetchFeedTask().execute((Void) null);
             }
         });
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 txtAboutApp.setVisibility(View.GONE);
-                urlParcel = "https://trafficscotland.org/rss/feeds/plannedroadworks.aspx";
+                urlParcel = SourceUrl.PLANNED_ROADWORKS.toString();
                 new FetchFeedTask().execute((Void) null);
             }
         });
