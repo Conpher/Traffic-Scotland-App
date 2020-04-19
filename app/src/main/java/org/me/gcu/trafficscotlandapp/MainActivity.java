@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if (itemList == null || itemList.size() == 0) return false;
                 if (initialAdaptor == null){
                     initialAdaptor = new ItemRecyclerAdapter(itemList);
                 }
@@ -166,7 +167,8 @@ public class MainActivity extends AppCompatActivity {
                 if (name.equalsIgnoreCase("title")) {
                     title = result;
                 } else if (name.equalsIgnoreCase("description")) {
-                    description = result;
+                    String updatedResult = result.replaceAll("<br />", "\n");
+                    description = updatedResult;
                 } else if (name.equalsIgnoreCase("link")) {
                     link = result;
                 }
@@ -189,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             return items;
+
         } finally {
             inputStream.close();
         }
