@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private List<ItemModel> itemList;
+    private ItemRecyclerAdapter initialAdaptor;
+
     private String urlParcel;
 
     @Override
@@ -100,9 +102,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                ItemRecyclerAdapter itemRecyclerAdapter = new ItemRecyclerAdapter(itemList);
-                itemRecyclerAdapter.getFilter().filter(newText);
+                if (initialAdaptor == null){
+                    initialAdaptor = new ItemRecyclerAdapter(itemList);
+                }
+                ItemRecyclerAdapter itemRecyclerAdapter = initialAdaptor;
+                initialAdaptor.getFilter().filter(newText);
                 itemRecycler.setAdapter(itemRecyclerAdapter);
+
                 return true;
             }
         });
@@ -224,7 +230,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (success) {
                 // Fill RecyclerView
-                itemRecycler.setAdapter(new ItemRecyclerAdapter(itemList));
+                initialAdaptor = new ItemRecyclerAdapter(itemList);
+                itemRecycler.setAdapter(initialAdaptor);
             } else {
                 Toast.makeText(MainActivity.this,
                         "Error, no items found...",
