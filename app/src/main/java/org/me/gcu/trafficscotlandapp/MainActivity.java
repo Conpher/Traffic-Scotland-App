@@ -34,6 +34,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Define references and create OnClickListeners.
+
     private static final String TAG = "MainActivity";
 
     private RecyclerView itemRecycler;
@@ -64,9 +66,11 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
 
+        //Set LayoutManager.
         itemRecycler.setLayoutManager(new LinearLayoutManager(this));
 
 
+        //OnClickListener for Current Incidents.
         btnCurrentIncidents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //OnClickListener for Roadworks.
         btnRoadworks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //OnClickListener for Planned Roadworks.
         btnPlannedRoadworks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,12 +100,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Create OnQueryListener for SearchView.
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 return false;
             }
 
+            //Stop Inception of SearchView, filter results if something is found and return true.
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (itemList == null || itemList.size() == 0) return false;
@@ -115,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        //set OnRefreshListener. If refresh takes place reload RecyclerView and execute FetchFeedTask.
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -123,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Parse List Item Model using XMLPullParser. Done using parseFeed method.
     public List<ItemModel> parseFeed(InputStream inputStream) throws XmlPullParserException, IOException {
         String title = null;
         String link = null;
@@ -131,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         List<ItemModel> items = new ArrayList<>();
 
         try {
+            //Filter through TAGs to retrieve specific items from the RSS feed.
             XmlPullParser xmlPullParser = Xml.newPullParser();
             xmlPullParser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             xmlPullParser.setInput(inputStream, null);
@@ -164,15 +175,21 @@ public class MainActivity extends AppCompatActivity {
                     xmlPullParser.nextTag();
                 }
 
+                //Get title.
                 if (name.equalsIgnoreCase("title")) {
                     title = result;
+
+                    //Get description and remove html break tags from result.
                 } else if (name.equalsIgnoreCase("description")) {
                     String updatedResult = result.replaceAll("<br />", "\n");
                     description = updatedResult;
+
+                    //Get link.
                 } else if (name.equalsIgnoreCase("link")) {
                     link = result;
                 }
 
+                //If items in the list != null then add item.
                 if (title != null && link != null && description != null) {
                     if(isItem) {
                         ItemModel item = new ItemModel(title, link, description);
@@ -180,8 +197,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else {
 
-                        Toast.makeText(MainActivity.this,"Error! No information available, please try again later.",
-                                Toast.LENGTH_SHORT).show();
+                        //Else display parsing issue in the log.
+                        Log.e(TAG, "Error, issue with parsing document");
                     }
 
                     title = null;
@@ -190,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     isItem = false;
                 }
             }
+            //Return items from the list.
             return items;
 
         } finally {
@@ -197,12 +215,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Fetch feed task is an AsyncTask, so processes wont be done on the main thread.
     private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
 
         private String urlLink;
 
-
-
+        //Executed before task start. Executed on the thread that is called.
         @Override
         protected void onPreExecute() {
 
@@ -210,9 +228,11 @@ public class MainActivity extends AppCompatActivity {
             urlLink = urlParcel;
         }
 
+        //Executes on a new thread. Stops heavy processes being carried out on main thread.
         @Override
         protected Boolean doInBackground(Void... voids) {
 
+            //Fetch RSS feed.
             try {
                 URL url = new URL(urlLink);
                 InputStream inputStream = url.openConnection().getInputStream();
@@ -231,8 +251,8 @@ public class MainActivity extends AppCompatActivity {
 
             refreshLayout.setRefreshing(false);
 
+            //If successful, fill the recycler view with items.
             if (success) {
-                // Fill RecyclerView
                 initialAdaptor = new ItemRecyclerAdapter(itemList);
                 itemRecycler.setAdapter(initialAdaptor);
             } else {

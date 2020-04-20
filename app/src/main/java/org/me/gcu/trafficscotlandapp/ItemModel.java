@@ -9,15 +9,22 @@ package org.me.gcu.trafficscotlandapp;
 
 public class ItemModel {
 
+    //Initialise variables.
+
     public String title;
     public String description;
     public String link;
+
+
+    //List of Strings into model.
 
     public ItemModel(String title, String link, String description) {
         this.title = title;
         this.description = description;
         this.link = link;
     }
+
+    //Create Setters and Getters for list items.
 
     public String getTitle() {
         return title;

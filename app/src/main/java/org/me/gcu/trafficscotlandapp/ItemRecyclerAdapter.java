@@ -26,25 +26,28 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
     public static class FeedModelViewHolder extends RecyclerView.ViewHolder {
 
-        private View rssFeedView;
+        private View FeedView;
 
         public FeedModelViewHolder(View v) {
             super(v);
-            rssFeedView = v;
+            FeedView = v;
         }
     }
 
 
+
+    //Bind list to ItemRecyclerAdapter
     public ItemRecyclerAdapter(List<ItemModel> listItem) {
 
         this.listItem = listItem;
         listItemFull = new ArrayList<>(listItem);
     }
 
+    //On create get RssFeed
     @Override
     public FeedModelViewHolder onCreateViewHolder(ViewGroup parent, int type) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_rss_feed, parent, false);
+                .inflate(R.layout.rss_feed_viewer, parent, false);
         FeedModelViewHolder holder = new FeedModelViewHolder(v);
         return holder;
     }
@@ -52,19 +55,21 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     @Override
     public void onBindViewHolder(FeedModelViewHolder holder, int position) {
         final ItemModel itemModel = listItem.get(position);
-        ((TextView)holder.rssFeedView.findViewById(R.id.titleText)).setText(itemModel.title);
-        ((TextView)holder.rssFeedView.findViewById(R.id.descriptionText)).setText(itemModel.description);
-        ((TextView)holder.rssFeedView.findViewById(R.id.linkText)).setText(itemModel.link);
+        ((TextView)holder.FeedView.findViewById(R.id.titleText)).setText(itemModel.title);
+        ((TextView)holder.FeedView.findViewById(R.id.descriptionText)).setText(itemModel.description);
+        ((TextView)holder.FeedView.findViewById(R.id.linkText)).setText(itemModel.link);
 
 
     }
 
+    //Net number of items in the list.
     @Override
     public int getItemCount() {
 
         return listItem.size();
     }
 
+    //Create Filter, this getFilter method will filter the list when searching for a specific item.
     @Override
     public Filter getFilter() {
         return exampleFilter;
@@ -90,13 +95,14 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
             }
 
+            //Filter list and return a result.
             FilterResults results = new FilterResults();
             results.values = filteredList;
 
             return results;
         }
 
-        //Data list now will only contain filtered items. Adapter is told to refresh List.
+        //Data list will now will only contain filtered items. Adapter is told to refresh List.
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults results) {
             listItem.clear();
