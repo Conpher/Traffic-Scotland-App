@@ -20,14 +20,14 @@
 
     <ImageView
         android:id="@+id/traffic_scotland_logo"
-        android:layout_width="match_parent"
-        android:layout_height="112dp"
-        android:layout_alignParentEnd="true"
+        android:layout_width="225dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/aboutAppTxtView"
         android:src="@drawable/traffic_scotland_logo_1135x226" />
 
     <Button
         android:id="@+id/getCurrentIncidentsBtn"
-        android:layout_width="match_parent"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/traffic_scotland_logo"
         android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -35,28 +35,41 @@
 
     <Button
         android:id="@+id/getRoadworksBtn"
-        android:layout_width="match_parent"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/getCurrentIncidentsBtn"
         android:text="@string/roadworks_btn" />
 
     <Button
         android:id="@+id/getPlannedRoadworksBtn"
-        android:layout_width="match_parent"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/getRoadworksBtn"
         android:text="@string/planned_roadworks"/>
 
+    <TextView
+        android:id="@+id/aboutAppTxtView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/recycler_view_description"
+        android:layout_toRightOf="@+id/traffic_scotland_logo"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:textSize="15dp"
+        android:textStyle="italic"
+        android:lineSpacingExtra="10dp"/>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/getPlannedRoadworksBtn"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_below="@+id/aboutAppTxtView"
+        android:layout_toRightOf="@+id/getPlannedRoadworksBtn">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

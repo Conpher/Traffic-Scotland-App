@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RssFeedListAdapter extends RecyclerView.Adapter<RssFeedListAdapter.FeedModelViewHolder> {
 
-    private List<RssFeedModel> mRssFeedModels;
+    private List<RssFeedModel> item;
 
     public static class FeedModelViewHolder extends RecyclerView.ViewHolder {
         private View rssFeedView;
@@ -28,7 +28,7 @@ public class RssFeedListAdapter extends RecyclerView.Adapter<RssFeedListAdapter.
     }
 
     public RssFeedListAdapter(List<RssFeedModel> rssFeedModels) {
-        mRssFeedModels = rssFeedModels;
+        item = rssFeedModels;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class RssFeedListAdapter extends RecyclerView.Adapter<RssFeedListAdapter.
 
     @Override
     public void onBindViewHolder(FeedModelViewHolder holder, int position) {
-        final RssFeedModel rssFeedModel = mRssFeedModels.get(position);
+        final RssFeedModel rssFeedModel = item.get(position);
         ((TextView)holder.rssFeedView.findViewById(R.id.titleText)).setText(rssFeedModel.title);
         ((TextView)holder.rssFeedView.findViewById(R.id.descriptionText)).setText(rssFeedModel.description);
         ((TextView)holder.rssFeedView.findViewById(R.id.linkText)).setText(rssFeedModel.link);
@@ -49,7 +49,7 @@ public class RssFeedListAdapter extends RecyclerView.Adapter<RssFeedListAdapter.
 
     @Override
     public int getItemCount() {
-        return mRssFeedModels.size();
+        return item.size();
     }
 }
 

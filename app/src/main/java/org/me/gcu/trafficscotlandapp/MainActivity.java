@@ -8,18 +8,21 @@ package org.me.gcu.trafficscotlandapp;
  */
 
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -34,14 +37,11 @@ public class MainActivity extends AppCompatActivity {
     private Button btnCurrentIncidents;
     private Button btnRoadworks;
     private Button btnPlannedRoadworks;
+    private TextView txtAboutApp;
     private SwipeRefreshLayout refreshLayout;
 
 
     private List<RssFeedModel> itemList;
-    private String mFeedTitle;
-    private String mFeedLink;
-    private String mFeedDescription;
-
     private String urlParcel;
 
     @Override
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         btnCurrentIncidents = (Button) findViewById(R.id.getCurrentIncidentsBtn);
         btnRoadworks = (Button) findViewById(R.id.getRoadworksBtn);
         btnPlannedRoadworks = (Button) findViewById(R.id.getPlannedRoadworksBtn);
+        txtAboutApp = (TextView) findViewById(R.id.aboutAppTxtView);
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
 
@@ -62,14 +63,16 @@ public class MainActivity extends AppCompatActivity {
         btnCurrentIncidents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txtAboutApp.setVisibility(View.GONE);
                 urlParcel = "https://trafficscotland.org/rss/feeds/currentincidents.aspx";
                 new FetchFeedTask().execute((Void) null);
             }
         });
 
-        btnRoadworks.setOnClickListener(new View.OnClickListener(){
+        btnRoadworks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txtAboutApp.setVisibility(View.GONE);
                 urlParcel = "https://trafficscotland.org/rss/feeds/roadworks.aspx";
                 new FetchFeedTask().execute((Void) null);
             }
@@ -78,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         btnPlannedRoadworks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txtAboutApp.setVisibility(View.GONE);
                 urlParcel = "https://trafficscotland.org/rss/feeds/plannedroadworks.aspx";
                 new FetchFeedTask().execute((Void) null);
             }
@@ -146,9 +150,9 @@ public class MainActivity extends AppCompatActivity {
                         items.add(item);
                     }
                     else {
-                        mFeedTitle = title;
-                        mFeedLink = link;
-                        mFeedDescription = description;
+
+                        Toast.makeText(MainActivity.this,"Error! No information available, please try again later.",
+                                Toast.LENGTH_SHORT).show();
                     }
 
                     title = null;
@@ -157,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
                     isItem = false;
                 }
             }
-
             return items;
         } finally {
             inputStream.close();
@@ -171,9 +174,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             refreshLayout.setRefreshing(true);
-            mFeedTitle = null;
-            mFeedLink = null;
-            mFeedDescription = null;
             urlLink = urlParcel;
         }
 
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                 itemRecycler.setAdapter(new RssFeedListAdapter(itemList));
             } else {
                 Toast.makeText(MainActivity.this,
-                        "Error! Please Try Again!",
+                        "Error, no items found...",
                         Toast.LENGTH_LONG).show();
             }
         }
