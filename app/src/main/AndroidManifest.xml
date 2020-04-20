@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.me.gcu.trafficscotlandapp">
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.me.gcu.trafficscotlandapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -12,6 +12,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/MainActivityTheme">
             <intent-filter>
                 <action

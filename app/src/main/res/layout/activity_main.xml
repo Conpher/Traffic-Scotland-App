@@ -12,73 +12,97 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="org.me.gcu.trafficscotlandapp.MainActivity">
-
-    <ImageView
-        android:id="@+id/traffic_scotland_logo"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/traffic_scotland_logo_1135x226"/>
-
-    <Button
-        android:id="@+id/getCurrentIncidentsBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/traffic_scotland_logo"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/current_incidents_btn"/>
-
-    <Button
-        android:id="@+id/getRoadworksBtn"
+    
+    <RelativeLayout
+        android:id="@+id/backgroundRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/getCurrentIncidentsBtn"
-        android:layout_below="@+id/traffic_scotland_logo"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/roadworks_btn" />
+        android:background="@drawable/gradient_background">
 
-    <Button
-        android:id="@+id/getPlannedRoadworksBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/getCurrentIncidentsBtn"
-        android:text="@string/planned_roadworks"/>
-
-    <TextView
-        android:id="@+id/aboutAppTxtView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/recycler_view_description"
-        android:layout_below="@id/searchView"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:textSize="15dp"
-        android:textStyle="italic"
-        android:lineSpacingExtra="10dp"/>
-
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/getPlannedRoadworksBtn"
-        android:queryHint="Search Here..."
-        android:iconifiedByDefault="false"/>
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/aboutAppTxtView"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <SearchView
+            android:id="@+id/searchView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+            android:imeOptions="flagNoExtractUi"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:background="@drawable/search_view_background"
+            android:queryHint="Search Here..."
+            android:iconifiedByDefault="false"/>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <Button
+            android:id="@+id/getCurrentIncidentsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/transparent_bk_bordered_btn"
+            android:layout_below="@+id/searchView"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:text="@string/current_incidents_btn"
+            android:textColor="@color/colorWhite"/>
+
+        <Button
+            android:id="@+id/getRoadworksBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/transparent_bk_bordered_btn"
+            android:layout_below="@+id/getCurrentIncidentsBtn"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:text="@string/roadworks_btn"
+            android:textColor="@color/colorWhite"/>
+
+        <Button
+            android:id="@+id/getPlannedRoadworksBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/getRoadworksBtn"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:background="@drawable/transparent_bk_bordered_btn"
+            android:text="@string/planned_roadworks"
+            android:textColor="@color/colorWhite"/>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_below="@+id/backgroundRelativeLayout"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/aboutAppTxtView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/recycler_view_description"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:textSize="15dp"
+            android:textStyle="italic"
+            android:lineSpacingExtra="10dp"/>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/aboutAppTxtView"
+            android:layout_marginTop="@dimen/activity_vertical_margin">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+    </RelativeLayout>
+
 </RelativeLayout>
