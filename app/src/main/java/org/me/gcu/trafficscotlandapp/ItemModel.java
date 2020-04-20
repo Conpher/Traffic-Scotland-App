@@ -11,6 +11,7 @@ public class ItemModel {
 
     //Initialise variables.
 
+    private String S1512271_StudentNo;
     public String title;
     public String description;
     public String link;

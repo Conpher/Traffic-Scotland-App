@@ -31,6 +31,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    private String S1512271_StudentNo;
+
     //Define references and create OnClickListeners.
     private static final String TAG = "MainActivity";
 
@@ -39,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private Button btnRoadworks;
     private Button btnPlannedRoadworks;
     private TextView txtAboutApp;
-    private TextView txtErrorOccured;
     private SwipeRefreshLayout refreshLayout;
     private SearchView searchView;
 

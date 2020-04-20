@@ -20,6 +20,8 @@ import java.util.List;
 
 public class GetRssDataOperation {
 
+    private String S1512271_StudentNo;
+
     //Parse List Item Model using XMLPullParser. Done using parseFeed method.
     public List<ItemModel> parseFeed(InputStream inputStream) throws XmlPullParserException, IOException {
         String title = null;

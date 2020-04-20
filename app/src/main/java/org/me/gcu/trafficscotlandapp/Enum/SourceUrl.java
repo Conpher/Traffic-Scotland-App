@@ -7,12 +7,14 @@ package org.me.gcu.trafficscotlandapp.Enum;
  * Mobile Platform Development Coursework
  */
 
+
 //Store all RSS Feed Urls as an enum.
 public enum SourceUrl {
     CURRENT_INCIDENTS("https://trafficscotland.org/rss/feeds/currentincidents.aspx",0),
     ROADWORKS("https://trafficscotland.org/rss/feeds/roadworks.aspx",1),
     PLANNED_ROADWORKS("https://trafficscotland.org/rss/feeds/plannedroadworks.aspx",2);
 
+    private String S1512271_StudentNo;
     private String stringValue;
     private int intValue;
     SourceUrl(String toString, int value) {

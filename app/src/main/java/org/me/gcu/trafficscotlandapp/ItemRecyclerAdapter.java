@@ -20,6 +20,7 @@ import java.util.List;
 
 public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapter.FeedModelViewHolder> implements Filterable {
 
+    private String S1512271_StudentNo;
     private List<ItemModel> listItem;
     private List<ItemModel> listItemFull;
 
