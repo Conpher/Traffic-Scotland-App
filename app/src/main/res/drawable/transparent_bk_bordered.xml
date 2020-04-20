@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Christopher Conlan
+    Created On: 20/04/2020
+    Student No: S1512271
+    Mobile Platform Development Coursework
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <!-- border -->
+            <stroke android:width="2dp" android:color="@color/colorWhite" />
+            <!-- corner roundness -->
+            <corners android:radius="2dp" />
+        </shape>
+    </item>
+</selector>

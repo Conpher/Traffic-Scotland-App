@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Christopher Conlan
+    Created On: 20/04/2020
+    Student No: S1512271
+    Mobile Platform Development Coursework
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:bottom="6dp"
+        android:drawable="@drawable/transparent_bk_bordered"
+        android:top="6dp" />
+</layer-list>

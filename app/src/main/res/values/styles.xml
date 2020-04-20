@@ -1,3 +1,11 @@
+
+<!--
+    Christopher Conlan
+    Created On: 14/04/2020
+    Student No: S1512271
+    Mobile Platform Development Coursework
+-->
+
 <resources>
 
     <!-- Base application theme. -->
@@ -11,6 +19,7 @@
     <style name="MainActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="color">@color/colorDarkBlue</item>
     </style>
 
 </resources>
