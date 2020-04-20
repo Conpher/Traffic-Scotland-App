@@ -207,6 +207,11 @@ public class MainActivity extends AppCompatActivity {
                     isItem = false;
                 }
             }
+            //If items size is greater than 0 remove first line of list.
+            if (items.size() > 0) {
+                items.remove(0);
+            }
+
             //Return items from the list.
             return items;
 
