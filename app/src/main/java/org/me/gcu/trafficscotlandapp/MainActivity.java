@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Xml;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
@@ -23,19 +22,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.me.gcu.trafficscotlandapp.Enum.SourceUrl;
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     //Define references and create OnClickListeners.
-
     private static final String TAG = "MainActivity";
 
     private RecyclerView itemRecycler;
@@ -51,6 +47,15 @@ public class MainActivity extends AppCompatActivity {
     private ItemRecyclerAdapter initialAdaptor;
 
     private String urlParcel;
+
+    //Keep placeholder text if there is no data or internet connection drops.
+    private void  showPlaceHolderText() {
+        if (itemList != null && itemList.size() > 0) {
+            txtAboutApp.setVisibility(View.GONE);
+        } else {
+            txtAboutApp.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         btnCurrentIncidents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                txtAboutApp.setVisibility(View.GONE);
                 urlParcel = SourceUrl.CURRENT_INCIDENTS.toString();
                 new FetchFeedTask().execute((Void) null);
             }
@@ -84,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         btnRoadworks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                txtAboutApp.setVisibility(View.GONE);
                 urlParcel = SourceUrl.ROADWORKS.toString();
                 new FetchFeedTask().execute((Void) null);
             }
@@ -94,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         btnPlannedRoadworks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                txtAboutApp.setVisibility(View.GONE);
                 urlParcel = SourceUrl.PLANNED_ROADWORKS.toString();
                 new FetchFeedTask().execute((Void) null);
             }
@@ -132,94 +134,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //Parse List Item Model using XMLPullParser. Done using parseFeed method.
-    public List<ItemModel> parseFeed(InputStream inputStream) throws XmlPullParserException, IOException {
-        String title = null;
-        String link = null;
-        String description = null;
-        boolean isItem = false;
-        List<ItemModel> items = new ArrayList<>();
-
-        try {
-            //Filter through TAGs to retrieve specific items from the RSS feed.
-            XmlPullParser xmlPullParser = Xml.newPullParser();
-            xmlPullParser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            xmlPullParser.setInput(inputStream, null);
-
-            xmlPullParser.nextTag();
-            while (xmlPullParser.next() != XmlPullParser.END_DOCUMENT) {
-                int eventType = xmlPullParser.getEventType();
-
-                String name = xmlPullParser.getName();
-                if(name == null)
-                    continue;
-
-                if(eventType == XmlPullParser.END_TAG) {
-                    if(name.equalsIgnoreCase("item")) {
-                        isItem = false;
-                    }
-                    continue;
-                }
-
-                if (eventType == XmlPullParser.START_TAG) {
-                    if(name.equalsIgnoreCase("item")) {
-                        isItem = true;
-                        continue;
-                    }
-                }
-
-                Log.d("MainActivity", "Parsing name ==> " + name);
-                String result = "";
-                if (xmlPullParser.next() == XmlPullParser.TEXT) {
-                    result = xmlPullParser.getText();
-                    xmlPullParser.nextTag();
-                }
-
-                //Get title.
-                if (name.equalsIgnoreCase("title")) {
-                    title = result;
-
-                    //Get description and remove html break tags from result.
-                } else if (name.equalsIgnoreCase("description")) {
-                    String updatedResult = result.replaceAll("<br />", "\n");
-                    description = updatedResult;
-
-                    //Get link.
-                } else if (name.equalsIgnoreCase("link")) {
-                    link = result;
-                }
-
-                //If items in the list != null then add item.
-                if (title != null && link != null && description != null) {
-                    if(isItem) {
-                        ItemModel item = new ItemModel(title, link, description);
-                        items.add(item);
-                    }
-                    else {
-
-                        //Else display parsing issue in the log.
-                        Log.e(TAG, "Error, issue with parsing document");
-                    }
-
-                    title = null;
-                    link = null;
-                    description = null;
-                    isItem = false;
-                }
-            }
-            //If items size is greater than 0 remove first line of list.
-            if (items.size() > 0) {
-                items.remove(0);
-            }
-
-            //Return items from the list.
-            return items;
-
-        } finally {
-            inputStream.close();
-        }
-    }
-
     //Fetch feed task is an AsyncTask, so processes wont be done on the main thread.
     private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -241,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 URL url = new URL(urlLink);
                 InputStream inputStream = url.openConnection().getInputStream();
-                itemList = parseFeed(inputStream);
+                itemList = new GetRssDataOperation().parseFeed(inputStream);
                 return true;
             } catch (IOException e) {
                 Log.e(TAG, "Error.", e);
@@ -260,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
             if (success) {
                 initialAdaptor = new ItemRecyclerAdapter(itemList);
                 itemRecycler.setAdapter(initialAdaptor);
+                showPlaceHolderText();
             } else {
                 Toast.makeText(MainActivity.this,
                         "Error, no items found...",

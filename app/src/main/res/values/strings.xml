@@ -7,10 +7,12 @@
 
 <resources>
     <string name="app_name">Traffic Scotland</string>
-    <string name="current_incidents_btn">Incidents</string>
+    <string name="current_incidents_btn">Current Incidents</string>
     <string name="roadworks_btn">Roadworks</string>
     <string name="planned_roadworks">Planned Roadworks</string>
     <string name="recycler_view_description">Welcome to the Traffic Scotland Mobile Application! This app
         is designed to display RSS feeds from the Traffic Scotland Website. To view Current Incidents, Roadworks
         or Planned Roadworks, please select one of the three buttons above.Thank you!</string>
+    <string name="no_data_available">Sorry, no data is currently available or there is no internet connection...
+        Please try one of the other options above or try again later.</string>
 </resources>
