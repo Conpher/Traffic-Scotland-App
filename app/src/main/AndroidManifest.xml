@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--
+    Christopher Conlan
+    Created On: 14/04/2020
+    Student No: S1512271
+    Mobile Platform Development Coursework
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.me.gcu.trafficscotlandapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>

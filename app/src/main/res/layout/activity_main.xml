@@ -88,17 +88,6 @@
             android:textStyle="italic"
             android:lineSpacingExtra="10dp"/>
 
-        <TextView
-            android:id="@+id/txtNoDataAvailable"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:text="@string/no_data_available"
-            android:textSize="15dp"
-            android:textStyle="italic"
-            android:lineSpacingExtra="10dp"
-            android:visibility="gone"/>
-
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
@@ -110,10 +99,6 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-
         </android.support.v4.widget.SwipeRefreshLayout>
-
-
     </RelativeLayout>
-
 </RelativeLayout>

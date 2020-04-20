@@ -1,5 +1,12 @@
 package org.me.gcu.trafficscotlandapp;
 
+/**
+ * Christopher Conlan
+ * Created On: 20/04/2020
+ * Student No: S1512271
+ * Mobile Platform Development Coursework
+ */
+
 import android.util.Log;
 import android.util.Xml;
 

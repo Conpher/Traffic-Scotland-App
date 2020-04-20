@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnRoadworks;
     private Button btnPlannedRoadworks;
     private TextView txtAboutApp;
+    private TextView txtErrorOccured;
     private SwipeRefreshLayout refreshLayout;
     private SearchView searchView;
 
